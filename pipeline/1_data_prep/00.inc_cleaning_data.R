@@ -1,4 +1,4 @@
-
+# This file loads data and does basic
 
 
 # Clean environmentn 
@@ -19,14 +19,12 @@ if (Sys.info()["sysname"] =="Linux") {
 ###########
 ## Loading data
 ###########
-start_time<-Sys.time()
+
 inc <- read_feather(paste0(root, 'data/intermediate/inc_2017_compiled.feather'))
-
-
 inc_1 <- as.data.table(inc)
 
-end_time<-Sys.time()
-end_time-start_time 
+
+
 
 # removing unnecessary columns 
 inc_1[, V1 := NULL]
