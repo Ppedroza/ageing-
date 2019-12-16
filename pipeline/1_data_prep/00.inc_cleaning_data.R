@@ -68,38 +68,6 @@ inc_17[, location_id:=NULL]
 # Calculating the squared of age
 inc_17[,agegrp2:=agegrp^2]
 
-##############################
-# Looking into causes that have too many zeros
-##############################
-
-# Flags causes that have zeros in draw_0
-cause_no_incid <-inc_17[draw_0==0,.(cause_name)]
-unique(cause_no_incid) # This gives me a datatable with the causes that don't have incidence and how many draws don't have it either. 
-causes_ni_list <- unique(cause_no_incid$cause_name)
-
-# Evaluation causes that have zeros in draw_0
-cause_no_incid[ , ':='( count_c0 = .N ) , by = cause_name ]
-# cause_no_incid[, table(count_c0)]
-
-
-
-
-
-
-inc_17[draw_0 == 0, ':='(causes_with_zeros_cnt = .N), by = cause_name] 
-
-# Quantifies how many age_group_ids have zeros. 
-# I think if there are less than 12 zeros, we can keep this cause
-# It's a sign that the decease doesn't exist in one location for any age_group_id
-inc_17[!is.na(causes_with_zeros_cnt), ':='(number_of_agi_w_zeros = .N), by = cause_name] 
-
-causes_no_inc <- inc_17[number_of_agi_w_zeros > 13, unique(cause_name)]
-
-
-inc_17[cause_id == 339 & draw_0 == 0 & location_id == 385,.N, by = .(location_id)]
-inc_17[, .N, by = .(location_id, age_group_id)]
-length(unique(inc_17$age_group_id))
-
-# I need to make a dataset with causes that have incidence
-
-# save
+# saving clean data
+write_feather(inc_17, 
+              paste0(root, 'data/intermediate/00.inc_cleaned.feather'))
