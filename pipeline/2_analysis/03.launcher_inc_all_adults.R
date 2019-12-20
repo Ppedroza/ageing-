@@ -3,11 +3,12 @@
 # This file: 
 # 1. reads all data
 # 2. creates a file with data bellow 80
-# 3. removes causes that have more than 13 zeros in draw_0
+# 3. labels causes that have more than 13 zeros in draw_0 
+#    in df with no 80
+# 4. Removes causes in 3 from data
 # 4. calls child script to run regression in parallel
-# for adults bellow 80.
+# for all adults
 ##########################################################
-
 
 # set workind directory
 rm(list = ls())
@@ -59,14 +60,14 @@ causes_with_zeros <-cause_no_incid[count>13,unique(cause_name)]
 # Selecting causes that don't have zeros
 ##
 
-global_incid_no80 <- incid_no80[!cause_name %in% c(causes_with_zeros)]
-global_incid_no80[,unique(cause_name)] # 153 causes
+global_incid <- incid_no80[!cause_name %in% c(causes_with_zeros)]
+global_incid[,unique(cause_name)] # 153 causes
 
 # Making a list of causes to run the regression
-causes <- unique(global_incid_no80$cause_id)
+causes <- unique(global_incid$cause_id)
 
 # I save the file here so the child script can read it
-write.csv(global_incid_no80, paste0(root, 'data/intermediate/01.inc_no_80.csv'), row.names = F)
+write.csv(global_incid, paste0(root, 'data/intermediate/01.inc_all_adults.csv'), row.names = F)
 
 ##
 # Runs regression
@@ -85,7 +86,7 @@ for (ccc in causes) {
                             "-e /homes/ppedroza/cluster_errors/  -o /homes/ppedroza/cluster_output/",
                             "/ihme/singularity-images/rstudio/shells/execRscript.sh -i /ihme/singularity-images/rstudio/ihme_rstudio_3602.img",
                             "-s %s %s", sep=" "),
-                      ccc, "/ihme/homes/ppedroza/Ageing_USA/ageing-/pipeline/2_analysis/02.regression_in_parallel_inc_no80.R", ccc)
+                      ccc, "/ihme/homes/ppedroza/Ageing_USA/ageing-/pipeline/2_analysis/04.regression_in_parallel_inc_all_adults.R", ccc)
   system(qsub_str)
 
   Sys.sleep(0.5)
