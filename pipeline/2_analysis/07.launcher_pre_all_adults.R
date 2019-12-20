@@ -3,12 +3,11 @@
 # This file: 
 # 1. reads all data
 # 2. creates a file with data bellow 80
-# 3. labels causes that have more than 13 zeros in draw_0 
-#    in df with no 80
-# 4. Removes causes in 3 from data
+# 3. removes causes that have more than 13 zeros in draw_0
 # 4. calls child script to run regression in parallel
-# for all adults
+# for adults bellow 80.
 ##########################################################
+
 
 # set workind directory
 rm(list = ls())
@@ -29,8 +28,8 @@ if (Sys.info()["sysname"] =="Linux") {
 ## Loading data
 ###########
 
-inc <- read_feather(paste0(root, 'data/intermediate/00.inc_cleaned.feather'))
-inc_1 <- as.data.table(inc)
+pre <- read_feather(paste0(root, 'data/intermediate/00.prev_cleaned.feather'))
+pre_1 <- as.data.table(pre)
 ################################
 #
 # First we run everything for under 80 and then 
@@ -41,33 +40,33 @@ inc_1 <- as.data.table(inc)
 ## 
 # Subseting to less than 80
 ##
-incid_no80 <- inc_1[agegrp<82, ]
+prev_no80 <- pre_1[agegrp<82, ]
 
 # Getting rid of causes that have zeros
 
-cause_no_incid<-incid_no80[draw_0==0,.(cause_name)]
-cause_no_incid[ , ':='( count = .N ) , by = cause_name ]
-cause_no_incid[, table(count)]
-cause_no_incid <- unique(cause_no_incid)
+cause_no_prev<-prev_no80[draw_0==0,.(cause_name)]
+cause_no_prev[ , ':='( count = .N ) , by = cause_name ]
+cause_no_prev[, table(count)]
+cause_no_prev <- unique(cause_no_prev)
 
 # make a list causes that have zeros
-causes_with_zeros <-cause_no_incid[count>13,unique(cause_name)] 
+causes_with_zeros <-cause_no_prev[count>13,unique(cause_name)] 
 
-# there are 51 causes that have zeros for incidence. The smallest count of zeros is 13. 
+# there are 51 causes that have zeros for prevalence. The smallest count of zeros is 13. 
 # most of these causes have more than 100 zeros some have more than 600
 
 ##
 # Selecting causes that don't have zeros
 ##
 
-global_incid <- inc_1[!cause_name %in% c(causes_with_zeros)]
-global_incid[,unique(cause_name)] # 153 causes
+global_prev <- pre_1[!cause_name %in% c(causes_with_zeros)]
+global_prev[,unique(cause_name)] # 30 causes
 
 # Making a list of causes to run the regression
-causes <- unique(global_incid$cause_id)
+causes <- unique(global_prev$cause_id)
 
 # I save the file here so the child script can read it
-write.csv(global_incid, paste0(root, 'data/intermediate/01.inc_all_adults.csv'), row.names = F)
+write.csv(global_prev, paste0(root, 'data/intermediate/07.pre_all_adults.csv'), row.names = F)
 
 ##
 # Runs regression
@@ -86,7 +85,7 @@ for (ccc in causes) {
                             "-e /homes/ppedroza/cluster_errors/  -o /homes/ppedroza/cluster_output/",
                             "/ihme/singularity-images/rstudio/shells/execRscript.sh -i /ihme/singularity-images/rstudio/ihme_rstudio_3602.img",
                             "-s %s %s", sep=" "),
-                      ccc, "/ihme/homes/ppedroza/Ageing_USA/ageing-/pipeline/2_analysis/04.regression_in_parallel_inc_all_adults.R", ccc)
+                      ccc, "/ihme/homes/ppedroza/Ageing_USA/ageing-/pipeline/2_analysis/08.regression_in_parallel_pre_all_adults.R", ccc)
   system(qsub_str)
 
   Sys.sleep(0.5)
