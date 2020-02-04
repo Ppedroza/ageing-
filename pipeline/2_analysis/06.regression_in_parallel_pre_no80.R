@@ -42,6 +42,6 @@ end_time-start_time   # 55.55111 mins for a single cause
 
 # save file
 write.csv(UR_prev_no80_s, 
-          paste0("/ihme/homes/ppedroza/Ageing_USA/data/intermediate/regression_output/pre_no80/", x, ".csv"), 
+          paste0("/ihme/homes/ppedroza/Ageing_USA/data/intermediate/1_regression_output/pre_no80/", x, ".csv"), 
           row.names = F)
 

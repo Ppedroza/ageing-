@@ -50,7 +50,7 @@ cause_no_prev[, table(count)]
 cause_no_prev <- unique(cause_no_prev)
 
 # make a list causes that have zeros
-causes_with_zeros <-cause_no_prev[count>13,unique(cause_name)] 
+causes_with_zeros <-cause_no_prev[count>312,unique(cause_name)] 
 
 # there are 51 causes that have zeros for prevalence. The smallest count of zeros is 13. 
 # most of these causes have more than 100 zeros some have more than 600

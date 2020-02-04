@@ -51,7 +51,7 @@ cause_no_incid[, table(count)]
 cause_no_incid <- unique(cause_no_incid)
 
 # make a list causes that have zeros
-causes_with_zeros <-cause_no_incid[count>13,unique(cause_name)] 
+causes_with_zeros <-cause_no_incid[count>260,unique(cause_name)] 
 
 # there are 51 causes that have zeros for incidence. The smallest count of zeros is 13. 
 # most of these causes have more than 100 zeros some have more than 600

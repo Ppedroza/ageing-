@@ -3,7 +3,7 @@
 # This file: 
 # 1. reads all data
 # 2. creates a file with data bellow 80
-# 3. removes causes that have more than 13 zeros in draw_0
+# 3. removes causes that have more than 260 zeros in draw_0
 # 4. calls child script to run regression in parallel
 # for adults bellow 80.
 ##########################################################
@@ -50,9 +50,9 @@ cause_no_prev[, table(count)]
 cause_no_prev <- unique(cause_no_prev)
 
 # make a list causes that have zeros
-causes_with_zeros <-cause_no_prev[count>13,unique(cause_name)] 
+causes_with_zeros <-cause_no_prev[count>312,unique(cause_name)] 
 
-# there are 51 causes that have zeros for prevalence. The smallest count of zeros is 13. 
+# there are 51 causes that have zeros for prevalence. The smallest count of zeros is 260. 
 # most of these causes have more than 100 zeros some have more than 600
 
 ##

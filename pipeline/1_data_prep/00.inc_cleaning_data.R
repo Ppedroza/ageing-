@@ -1,11 +1,9 @@
-# This file loads data and does basic
-
+# This file loads data and does basic 
 
 # Clean environmentn 
 rm(list=ls())
 library(feather)
 library(data.table)
-
 
 # Set directories 
 if (Sys.info()["sysname"] =="Linux") {
@@ -14,17 +12,12 @@ if (Sys.info()["sysname"] =="Linux") {
     root <-"H:/Ageing_USA/"
 }
 
-
-
 ###########
 ## Loading data
 ###########
 
 inc <- read_feather(paste0(root, 'data/intermediate/inc_2017_compiled.feather'))
 inc_1 <- as.data.table(inc)
-
-
-
 
 # removing unnecessary columns 
 inc_1[, V1 := NULL]
